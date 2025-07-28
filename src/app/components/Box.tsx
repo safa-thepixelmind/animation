@@ -16,11 +16,11 @@ export default function Box() {
 
   const imageUrls = [
     "/images/cube/front.png",
-  "/images/cube/back.jpg",
-  "/images/cube/top.jpg",
-  "/images/cube/bottom.jpg",
-  "/images/cube/right.jpg",
-  "/images/cube/left.jpg",
+    "/images/cube/back.jpg",
+    "/images/cube/top.jpg",
+    "/images/cube/bottom.jpg",
+    "/images/cube/right.jpg",
+    "/images/cube/left.jpg",
   ];
 
   const animateCubeIn = () => {
@@ -53,7 +53,7 @@ export default function Box() {
 
     const camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      mount.clientWidth / mount.clientHeight,
       0.1,
       1000
     );
@@ -61,7 +61,7 @@ export default function Box() {
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
     mount.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -72,9 +72,14 @@ export default function Box() {
       const materials = textures.map(
         (texture) => new THREE.MeshBasicMaterial({ map: texture })
       );
-      const geometry = new THREE.BoxGeometry(1.3, 1.3, 1.3);
+
+      const isMobile = window.innerWidth < 768;
+      const size = isMobile ? 0.9 : 1.4;
+
+      const geometry = new THREE.BoxGeometry(size, size, size);
       const cube = new THREE.Mesh(geometry, materials);
-      cube.position.z = -4;
+      cube.position.z = isMobile ? 5 : 6.5;
+
       scene.add(cube);
       cubeRef.current = cube;
 
@@ -83,47 +88,71 @@ export default function Box() {
 
     const animate = () => {
       requestAnimationFrame(animate);
-      if (cubeRef.current) {
-        if (!isDraggingRef.current) {
-          cubeRef.current.rotation.x += 0.0015;
-          cubeRef.current.rotation.y += 0.0015;
-        }
+
+      if (cubeRef.current && !isDraggingRef.current) {
+        cubeRef.current.rotation.x += 0.0015;
+        cubeRef.current.rotation.y += 0.0015;
       }
+
       if (rendererRef.current && sceneRef.current && cameraRef.current) {
         rendererRef.current.render(sceneRef.current, cameraRef.current);
       }
     };
     animate();
 
-    const onMouseDown = (event: MouseEvent) => {
+    const onMouseDown = (e: MouseEvent) => {
       isDraggingRef.current = true;
-      previousMousePosition.current = { x: event.clientX, y: event.clientY };
+      previousMousePosition.current = { x: e.clientX, y: e.clientY };
     };
 
-    const onMouseUp = () => {
+    const onMouseUp = () => (isDraggingRef.current = false);
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDraggingRef.current || !cubeRef.current) return;
+
+      const delta = {
+        x: e.clientX - previousMousePosition.current.x,
+        y: e.clientY - previousMousePosition.current.y,
+      };
+
+      cubeRef.current.rotation.y += delta.x * 0.01;
+      cubeRef.current.rotation.x += delta.y * 0.01;
+
+      previousMousePosition.current = { x: e.clientX, y: e.clientY };
+    };
+    const onTouchStart = (e: TouchEvent) => {
+      isDraggingRef.current = true;
+      const touch = e.touches[0];
+      previousMousePosition.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const onTouchEnd = () => {
       isDraggingRef.current = false;
     };
 
-    const onMouseMove = (event: MouseEvent) => {
+    const onTouchMove = (e: TouchEvent) => {
       if (!isDraggingRef.current || !cubeRef.current) return;
-
-      const deltaMove = {
-        x: event.clientX - previousMousePosition.current.x,
-        y: event.clientY - previousMousePosition.current.y,
+      const touch = e.touches[0];
+      const delta = {
+        x: touch.clientX - previousMousePosition.current.x,
+        y: touch.clientY - previousMousePosition.current.y,
       };
 
-      cubeRef.current.rotation.y += deltaMove.x * 0.01;
-      cubeRef.current.rotation.x += deltaMove.y * 0.01;
+      cubeRef.current.rotation.y += delta.x * 0.01;
+      cubeRef.current.rotation.x += delta.y * 0.01;
 
-      previousMousePosition.current = {
-        x: event.clientX,
-        y: event.clientY,
-      };
+      previousMousePosition.current = { x: touch.clientX, y: touch.clientY };
     };
 
+    // Mouse Events
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mouseup", onMouseUp);
     window.addEventListener("mousemove", onMouseMove);
+
+    // Touch Events
+    window.addEventListener("touchstart", onTouchStart);
+    window.addEventListener("touchend", onTouchEnd);
+    window.addEventListener("touchmove", onTouchMove);
 
     return () => {
       if (rendererRef.current && mount) {
@@ -132,28 +161,35 @@ export default function Box() {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
       window.removeEventListener("mousemove", onMouseMove);
+
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchmove", onTouchMove);
     };
   }, []);
 
   return (
-    <div
-      ref={mountRef}
-      className="fixed inset-0 z-20 flex items-center justify-center relative"
-    >
-      <button
-        onClick={animateCubeIn}
-        className="inline-flex items-center justify-center whitespace-nowrap px-4 py-2 absolute top-20 left-20 relative overflow-hidden isolate 
-              text-black font-bold px-4 py-2 z-50
-              bg-transparent
-              before:absolute before:inset-0
-              before:bg-orange-500 before:z-[-1]
-              before:origin-left
-              before:scale-x-0
-              hover:before:scale-x-100
-              before:transition-transform before:duration-300"
-      >
-        Reload Cube
-      </button>
+    <div className="w-full h-screen pt-16 flex flex-col sm:flex-row items-center justify-center gap-60">
+      <div className="z-50 sm:mr-8">
+        <button
+          onClick={animateCubeIn}
+          className="absolute 
+    left-40 top-[15%] sm:left-55 sm:top-[50%] sm:translate-y-[-50%] sm:right-auto 
+    z-50 font-semibold text-black 
+    bg-transparent overflow-hidden isolate
+    before:absolute before:inset-0 before:bg-orange-500 before:z-[-1]
+    before:origin-left before:scale-x-0 
+    hover:before:scale-x-100 active:before:scale-x-100
+    before:transition-transform before:duration-300"
+        >
+          Reload Cube
+        </button>
+      </div>
+
+      <div
+        ref={mountRef}
+        className="fixed inset-0 z-10 flex items-center justify-center"
+      />
     </div>
   );
 }
