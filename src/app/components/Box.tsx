@@ -169,7 +169,7 @@ export default function Box() {
   }, []);
 
   return (
-    <div className="w-full h-screen pt-16 flex flex-col sm:flex-row items-center justify-center gap-60">
+    <div className="w-full h-screen pt-16 flex flex-col sm:flex-row items-center justify-center gap-60 z-50">
       <div className="z-50 sm:mr-8">
         <button
           onClick={animateCubeIn}

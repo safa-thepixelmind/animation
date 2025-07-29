@@ -9,7 +9,7 @@ const RevealScreen: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         // Start the reveal animation after mount
         const timeout = setTimeout(() => {
             setRevealed(true);
-        }, 10); // slight delay for effect
+        }, 100); // slight delay for effect
         return () => clearTimeout(timeout);
     }, []);
 

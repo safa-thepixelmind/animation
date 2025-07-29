@@ -55,11 +55,11 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }) => {
         style={{ width: `${progress}%` }}
       ></div>
 
-      {/* ANIMATION text */}
+      {/* AMANATION text */}
       <div
-        className="absolute top-8 left-4 sm:left-8 pointer-events-none font-extrabold tracking-wider text-[2.5rem] sm:text-[4rem] md:text-[6rem] lg:text-[8rem] leading-none text-[#646464]"
+        className="absolute top-8 left-4 sm:left-8 pointer-events-none font-extrabold tracking-wider text-[2.5rem] sm:text-[4rem] md:text-[4rem] lg:text-[8rem] leading-none text-[#646464] z-50"
       >
-        ANIMATION
+        AMANATION
       </div>
 
       {/* Progress number */}

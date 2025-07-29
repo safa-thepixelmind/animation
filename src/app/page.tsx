@@ -3,6 +3,7 @@ import LoadingAnimation from "@/app/components/Loading";
 import { useEffect, useState } from "react";
 
 import Box from "@/app/components/Box";
+import Navbar from "@/app/components/Navbar";
 import RevealScreen from "@/app/components/RevealScreen";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
   }, []);
 
   return (
+    <>
     <div>
       {!loadingDone && (
         <LoadingAnimation onComplete={() => setLoadingDone(true)} />
@@ -22,9 +24,12 @@ export default function Home() {
         <RevealScreen>
           <div className="flex min-h-screen items-center justify-center bg-white">
             <Box />
+            <Navbar />
           </div>
         </RevealScreen>
       )}
     </div>
+    </>
+    
   );
 }
