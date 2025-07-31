@@ -98,7 +98,7 @@ const Button: React.FC = () => {
       
       <button
         onMouseMove={handleMouseMove}
-        className="fluid-button text-2xl font-extrabold bg-black rounded-full px-14 py-6 focus:outline-none border-1 border-transparent hover:border-white"
+        className="fluid-button text-2xl font-extrabold bg-black rounded-full px-14 py-4 focus:outline-none border-1 border-transparent hover:border-white"
       >
         <span className="text-container">
           {/* Layer 1: Static white text */}

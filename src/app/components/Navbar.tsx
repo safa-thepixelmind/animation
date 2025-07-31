@@ -119,13 +119,13 @@ const Navbar: React.FC = () => {
 
       {/* Logo - z-index adjusted to appear behind the menu */}
       <div
-        className="fixed top-10 left-4 sm:left-8 pointer-events-none font-bold text-[2.5rem] sm:text-[4rem] md:text-[4rem] lg:text-[9rem] leading-none text-black z-30 fontwidth-extrabold text-900"
+        className="fixed top-10 left-4 sm:left-8 pointer-events-none font-bold text-[2.5rem] sm:text-[4rem] md:text-[4rem] lg:text-[10rem] leading-none text-black z-1 fontwidth-extrabold text-900 text-gray-800"
       >
         AMANATION
       </div>
 
       {/* Menu Button - Kept your new fluid button component */}
-      <div className="fixed top-5 right-5 sm:top-10 sm:right-10 z-50">
+      <div className="fixed top-5 right-5 sm:top-10 sm:right-10 z-3">
         <div onClick={() => setMenuOpen(!menuOpen)}>
           <Button />
         </div>
