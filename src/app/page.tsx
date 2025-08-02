@@ -39,7 +39,7 @@ export default function Home() {
               {/* ✅ MarqueeBar is now here, between the sections */}
               <MarqueeBar />
               <CreatorPage />
-
+              
             </main>
           </RevealScreen>
         )}
